@@ -1,30 +1,15 @@
 #include "themeController.h"
 
-#include <QGuiApplication>
-#include <QStyleHints>
-
-#ifdef Q_OS_WINDOWS
-    #include "platforms/windows/windowsThemeListener.h"
-#endif
+#include "platforms/systemThemeListener.h"
 
 ThemeController::ThemeController(QObject *parent) : QObject(parent)
 {
-    auto *styleHints = QGuiApplication::styleHints();
-    m_applicationColorScheme = styleHints->colorScheme();
-    m_systemColorScheme = m_applicationColorScheme;
-    connect(styleHints, &QStyleHints::colorSchemeChanged, this, &ThemeController::updateApplicationColorScheme);
-
-#ifdef Q_OS_WINDOWS
-    auto *listener = new WindowsThemeListener(this);
-    m_windowsColorScheme = listener->colorScheme();
-    if (m_windowsColorScheme != Qt::ColorScheme::Unknown) {
-        m_systemColorScheme = m_windowsColorScheme;
-    }
-    connect(listener, &WindowsThemeListener::colorSchemeChanged, this, [this](Qt::ColorScheme colorScheme) {
-        m_windowsColorScheme = colorScheme;
-        updateSystemColorScheme(colorScheme == Qt::ColorScheme::Unknown ? m_applicationColorScheme : colorScheme);
-    });
-#endif
+    auto *listener = new SystemThemeListener(this);
+    m_applicationColorScheme = listener->applicationColorScheme();
+    m_systemColorScheme = listener->systemColorScheme();
+    connect(listener, &SystemThemeListener::applicationColorSchemeChanged, this,
+            &ThemeController::updateApplicationColorScheme);
+    connect(listener, &SystemThemeListener::systemColorSchemeChanged, this, &ThemeController::updateSystemColorScheme);
 }
 
 Qt::ColorScheme ThemeController::applicationColorScheme() const
@@ -44,12 +29,6 @@ void ThemeController::updateApplicationColorScheme(Qt::ColorScheme colorScheme)
     }
     m_applicationColorScheme = colorScheme;
     emit applicationColorSchemeChanged(colorScheme);
-#ifdef Q_OS_WINDOWS
-    if (m_windowsColorScheme != Qt::ColorScheme::Unknown) {
-        return;
-    }
-#endif
-    updateSystemColorScheme(colorScheme);
 }
 
 void ThemeController::updateSystemColorScheme(Qt::ColorScheme colorScheme)

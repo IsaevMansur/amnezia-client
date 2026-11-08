@@ -7,7 +7,6 @@
 
 #include "notificationHandler.h"
 
-#include <QColor>
 #include <QMenu>
 #include <QSystemTrayIcon>
 
@@ -26,9 +25,7 @@ public:
 
 public slots:
     void updateWebsiteUrl(const QString &newWebsiteUrl);
-#ifdef Q_OS_WINDOWS
     void setSystemColorScheme(Qt::ColorScheme colorScheme);
-#endif
 
 protected:
     virtual void notify(Message type, const QString& title,
@@ -41,6 +38,7 @@ private:
     void onTrayActivated(QSystemTrayIcon::ActivationReason reason);
 
     void setTrayIcon(const QString &iconPath);
+    QString trayIconName() const;
 
 private:
     QMenu m_menu;
@@ -59,9 +57,10 @@ private:
     QAction* m_separator = nullptr;
 
     Vpn::ConnectionState m_connectionState = Vpn::ConnectionState::Disconnected;
-    QString m_connectedTrayIconName = "active.png";
-    QColor m_disconnectedTrayIconColor = Qt::white;
-    const QString DisconnectedTrayIconName = "active.png";
+    Qt::ColorScheme m_systemColorScheme = Qt::ColorScheme::Unknown;
+    const QString ConnectedTrayIconName = "active.png";
+    const QString DisconnectedTrayIconName = "default.png";
+    const QString DisconnectedLightThemeTrayIconName = "default-dark.png";
     const QString ErrorTrayIconName = "error.png";
     QString  websiteUrl = "https://amnezia.org";
 };

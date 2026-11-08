@@ -25,9 +25,6 @@ private:
 
     Qt::ColorScheme m_applicationColorScheme = Qt::ColorScheme::Unknown;
     Qt::ColorScheme m_systemColorScheme = Qt::ColorScheme::Unknown;
-#ifdef Q_OS_WINDOWS
-    Qt::ColorScheme m_windowsColorScheme = Qt::ColorScheme::Unknown;
-#endif
 };
 
 #endif

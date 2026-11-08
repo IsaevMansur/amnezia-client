@@ -78,6 +78,7 @@
         <file>controls/x-circle.svg</file>
         <file>tray/active.png</file>
         <file>tray/default.png</file>
+        <file>tray/default-dark.png</file>
         <file>tray/error.png</file>
         <file>controls/monitor.svg</file>
     </qresource>
