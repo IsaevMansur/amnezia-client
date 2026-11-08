@@ -184,6 +184,8 @@ void CoreController::initCoreControllers()
 
 void CoreController::initControllers()
 {
+    m_themeController = new ThemeController(this);
+
     m_connectionUiController = new ConnectionUiController(m_connectionController, m_serversController, this);
     setQmlContextProperty("ConnectionController", m_connectionUiController);
 

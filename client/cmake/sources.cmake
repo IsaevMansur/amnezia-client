@@ -271,10 +271,12 @@ set(SOURCES ${SOURCES}
 
 if(WIN32)
     set(HEADERS ${HEADERS}
+        ${CLIENT_ROOT_DIR}/platforms/windows/windowsThemeListener.h
         ${CLIENT_ROOT_DIR}/core/protocols/ikev2VpnProtocolWindows.h
     )
 
     set(SOURCES ${SOURCES}
+        ${CLIENT_ROOT_DIR}/platforms/windows/windowsThemeListener.cpp
         ${CLIENT_ROOT_DIR}/core/protocols/ikev2VpnProtocolWindows.cpp
     )
 

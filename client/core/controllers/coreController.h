@@ -33,6 +33,7 @@
 #include "ui/controllers/updateUiController.h"
 #include "ui/controllers/api/servicesCatalogUiController.h"
 #include "ui/controllers/networkReachabilityController.h"
+#include "ui/controllers/themeController.h"
 
 #include "core/controllers/serversController.h"
 #include "core/controllers/selfhosted/usersController.h"
@@ -174,6 +175,7 @@ private:
 
     ConnectionUiController* m_connectionUiController;
     FocusController* m_focusController = nullptr;
+    ThemeController *m_themeController;
     PageController* m_pageController;
     InstallUiController* m_installUiController;
     ImportUiController* m_importController;

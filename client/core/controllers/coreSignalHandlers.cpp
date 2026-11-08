@@ -543,6 +543,11 @@ void CoreSignalHandlers::initNotificationHandler()
     connect(m_coreController, &CoreController::translationsUpdated, m_coreController->m_notificationHandler, &NotificationHandler::onTranslationsUpdated);
 
     auto* trayHandler = qobject_cast<SystemTrayNotificationHandler*>(m_coreController->m_notificationHandler);
+    #ifdef Q_OS_WINDOWS
+    connect(m_coreController->m_themeController, &ThemeController::systemColorSchemeChanged, trayHandler,
+            &SystemTrayNotificationHandler::setSystemColorScheme);
+    trayHandler->setSystemColorScheme(m_coreController->m_themeController->systemColorScheme());
+    #endif
     connect(m_coreController, &CoreController::websiteUrlChanged, trayHandler, &SystemTrayNotificationHandler::updateWebsiteUrl);
 #endif    
 }
