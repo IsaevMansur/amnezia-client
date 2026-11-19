@@ -1,6 +1,7 @@
 set(CLIENT_ROOT_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
 
 set(HEADERS ${HEADERS}
+    ${CLIENT_ROOT_DIR}/core/controllers/themeController.h
     ${CLIENT_ROOT_DIR}/platforms/systemThemeListener.h
     ${CLIENT_ROOT_DIR}/core/utils/migrations.h
     ${CLIENT_ROOT_DIR}/../ipc/ipc.h
@@ -102,6 +103,7 @@ if(NOT ANDROID)
 endif()
 
 set(SOURCES ${SOURCES}
+    ${CLIENT_ROOT_DIR}/core/controllers/themeController.cpp
     ${CLIENT_ROOT_DIR}/platforms/systemThemeListener.cpp
     ${CLIENT_ROOT_DIR}/core/utils/migrations.cpp
     ${CLIENT_ROOT_DIR}/amneziaApplication.cpp

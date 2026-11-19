@@ -21,6 +21,11 @@ Qt::ColorScheme WindowsThemeListener::colorScheme() const
     return m_colorScheme;
 }
 
+Qt::ColorScheme WindowsThemeListener::applicationColorScheme() const
+{
+    return m_applicationColorScheme;
+}
+
 bool WindowsThemeListener::nativeEventFilter(const QByteArray &eventType, void *message, qintptr *)
 {
     if (eventType == "windows_generic_MSG" || eventType == "windows_dispatcher_MSG") {
@@ -36,15 +41,21 @@ void WindowsThemeListener::refreshColorScheme()
 {
     const QSettings settings("HKEY_CURRENT_USER\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize",
                              QSettings::NativeFormat);
-    bool valid = false;
-    const int lightTheme = settings.value("SystemUsesLightTheme").toInt(&valid);
-    Qt::ColorScheme colorScheme = Qt::ColorScheme::Unknown;
-    if (valid && (lightTheme == 0 || lightTheme == 1)) {
-        colorScheme = lightTheme == 0 ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light;
+    const auto readColorScheme = [&settings](const QString &key) {
+        bool valid = false;
+        const int lightTheme = settings.value(key).toInt(&valid);
+        return valid && (lightTheme == 0 || lightTheme == 1)
+                ? (lightTheme == 0 ? Qt::ColorScheme::Dark : Qt::ColorScheme::Light)
+                : Qt::ColorScheme::Unknown;
+    };
+    const auto applicationColorScheme = readColorScheme("AppsUseLightTheme");
+    const auto colorScheme = readColorScheme("SystemUsesLightTheme");
+    if (m_applicationColorScheme != applicationColorScheme) {
+        m_applicationColorScheme = applicationColorScheme;
+        emit applicationColorSchemeChanged(applicationColorScheme);
     }
-    if (m_colorScheme == colorScheme) {
-        return;
+    if (m_colorScheme != colorScheme) {
+        m_colorScheme = colorScheme;
+        emit colorSchemeChanged(colorScheme);
     }
-    m_colorScheme = colorScheme;
-    emit colorSchemeChanged(colorScheme);
 }

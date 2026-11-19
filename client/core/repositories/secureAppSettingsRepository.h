@@ -26,6 +26,8 @@ public:
 
     QLocale getAppLanguage() const;
     void setAppLanguage(QLocale locale);
+    int themeMode() const;
+    void setThemeMode(int mode);
 
     bool useAmneziaDns() const;
     void setUseAmneziaDns(bool enabled);
@@ -115,6 +117,7 @@ public:
     void setLocalProxyPortUserDefined(bool userDefined);
 
 signals:
+    void themeModeChanged();
     void appLanguageChanged(QLocale locale);
     void allowedDnsServersChanged(const QStringList &servers);
     void sitesChanged(RouteMode mode);

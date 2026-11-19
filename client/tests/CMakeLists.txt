@@ -10,9 +10,10 @@ function(amnezia_copy_runtime_dlls)
     foreach(_target ${_targets})
         get_target_property(_type ${_target} TYPE)
         if(_type STREQUAL "EXECUTABLE")
+            set(_runtime_dlls "$<FILTER:$<TARGET_RUNTIME_DLLS:${_target}>,EXCLUDE,/Qt6[^/]*\\.dll$>")
             add_custom_command(TARGET ${_target} POST_BUILD
-                COMMAND ${CMAKE_COMMAND} -E copy_if_different
-                    "$<FILTER:$<TARGET_RUNTIME_DLLS:${_target}>,EXCLUDE,/Qt6[^/]*\\.dll$>"
+                COMMAND ${CMAKE_COMMAND} -E "$<IF:$<BOOL:${_runtime_dlls}>,copy_if_different,true>"
+                    "${_runtime_dlls}"
                     "$<TARGET_FILE_DIR:${_target}>"
                 COMMAND_EXPAND_LISTS
             )
@@ -62,14 +63,23 @@ target_include_directories(test_common PUBLIC
 )
 
 if(NOT ANDROID)
+    find_package(Qt6 REQUIRED COMPONENTS QuickTest)
+    add_executable(test_theme_palette testThemePalette.cpp)
+    target_link_libraries(test_theme_palette PRIVATE Qt6::QuickTest)
+    target_compile_definitions(test_theme_palette PRIVATE QUICK_TEST_SOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}/qml")
+    add_test(NAME ThemePaletteTest COMMAND test_theme_palette
+        -import "${CMAKE_CURRENT_SOURCE_DIR}/../ui/qml/Modules" -platform offscreen)
+
     add_executable(test_theme_controller
         testThemeController.cpp
         ../images/images.qrc
+        ../ui/qml/qml.qrc
     )
 
     target_link_libraries(test_theme_controller PRIVATE
         Qt6::Test
         test_common
+        SortFilterProxyModel
     )
 
     add_executable(test_multiple_imports

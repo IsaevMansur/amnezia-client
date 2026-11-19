@@ -9,21 +9,23 @@
 
 SystemThemeListener::SystemThemeListener(QObject *parent) : QObject(parent)
 {
-    auto *styleHints = QGuiApplication::styleHints();
-    m_applicationColorScheme = styleHints->colorScheme();
-    m_systemColorScheme = m_applicationColorScheme;
-    connect(styleHints, &QStyleHints::colorSchemeChanged, this, &SystemThemeListener::updateApplicationColorScheme);
-
 #ifdef Q_OS_WINDOWS
     auto *listener = new WindowsThemeListener(this);
+    m_applicationColorScheme = listener->applicationColorScheme();
     m_windowsColorScheme = listener->colorScheme();
-    if (m_windowsColorScheme != Qt::ColorScheme::Unknown) {
-        m_systemColorScheme = m_windowsColorScheme;
-    }
+    m_systemColorScheme =
+            m_windowsColorScheme == Qt::ColorScheme::Unknown ? m_applicationColorScheme : m_windowsColorScheme;
+    connect(listener, &WindowsThemeListener::applicationColorSchemeChanged, this,
+            &SystemThemeListener::updateApplicationColorScheme);
     connect(listener, &WindowsThemeListener::colorSchemeChanged, this, [this](Qt::ColorScheme colorScheme) {
         m_windowsColorScheme = colorScheme;
         updateSystemColorScheme(colorScheme == Qt::ColorScheme::Unknown ? m_applicationColorScheme : colorScheme);
     });
+#else
+    auto *styleHints = QGuiApplication::styleHints();
+    m_applicationColorScheme = styleHints->colorScheme();
+    m_systemColorScheme = m_applicationColorScheme;
+    connect(styleHints, &QStyleHints::colorSchemeChanged, this, &SystemThemeListener::updateApplicationColorScheme);
 #endif
 }
 

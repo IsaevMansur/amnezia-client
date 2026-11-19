@@ -58,7 +58,7 @@ Rectangle {
             color: AmneziaStyle.color.textPrimary
             placeholderTextColor: AmneziaStyle.color.textTertiary
             selectionColor: AmneziaStyle.color.accentDeep
-            selectedTextColor: AmneziaStyle.color.textPrimary
+            selectedTextColor: AmneziaStyle.color.textSelection
 
             font.pixelSize: 16
             font.weight: 400

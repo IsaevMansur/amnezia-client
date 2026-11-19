@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.impl
 import QtQuick.Layouts
 import QtQuick.Dialogs
 
@@ -62,7 +63,7 @@ PageType {
         }
     }
 
-    Image {
+    IconImage {
         id: scanFrame
 
         anchors.horizontalCenter: parent.horizontalCenter
@@ -73,6 +74,7 @@ PageType {
         height: width
 
         source: "qrc:/images/controls/qr-scan-frame.svg"
+        color: AmneziaStyle.color.iconDefault
         sourceSize: Qt.size(width, height)
     }
 

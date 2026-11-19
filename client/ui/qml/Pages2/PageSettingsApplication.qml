@@ -44,6 +44,18 @@ PageType {
                 spacing: 0
 
                 ListItemType {
+                    Layout.fillWidth: true
+
+                    visible: Qt.platform.os === "windows"
+
+                    text: qsTr("Theme")
+                    subtitle: selectThemeDrawer.currentThemeName
+                    trailingIconSource: "qrc:/images/controls/chevron-right.svg"
+
+                    onClicked: selectThemeDrawer.open()
+                }
+
+                ListItemType {
                     id: switcherAllowScreenshotsRow
 
                     Layout.fillWidth: true
@@ -295,5 +307,9 @@ PageType {
 
     SelectLanguageDrawer {
         id: selectLanguageDrawer
+    }
+
+    SelectThemeDrawer {
+        id: selectThemeDrawer
     }
 }

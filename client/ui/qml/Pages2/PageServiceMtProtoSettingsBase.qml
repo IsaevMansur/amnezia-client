@@ -1,5 +1,6 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Controls.impl
 import QtQuick.Layouts
 
 import SortFilterProxyModel 0.2
@@ -1206,11 +1207,12 @@ PageType {
                                                         elide: Text.ElideMiddle
                                                     }
 
-                                                    Image {
+                                                    IconImage {
                                                         width: 24
                                                         height: 24
                                                         visible: addSecretDelegate.linksPanelAllowed
                                                         source: "qrc:/images/controls/chevron-down.svg"
+                                                        color: AmneziaStyle.color.iconDefault
                                                         sourceSize.width: 24
                                                         sourceSize.height: 24
                                                         rotation: addSecretDelegate.linksExpanded ? 180 : 0

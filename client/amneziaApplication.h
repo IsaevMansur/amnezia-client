@@ -31,7 +31,7 @@ class AmneziaApplication : public AMNEZIA_BASE_CLASS
 {
     Q_OBJECT
 public:
-    AmneziaApplication(int &argc, char *argv[]);
+    AmneziaApplication(int &argc, char *argv[], SecureQSettings *settings = nullptr);
     virtual ~AmneziaApplication();
 
     void init();

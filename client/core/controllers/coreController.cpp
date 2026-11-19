@@ -1,6 +1,8 @@
 #include "coreController.h"
 
 #include <QCoreApplication>
+#include <QGuiApplication>
+#include <QStyleHints>
 #include <QDirIterator>
 #include <QTranslator>
 #include <QTimer>
@@ -184,7 +186,13 @@ void CoreController::initCoreControllers()
 
 void CoreController::initControllers()
 {
-    m_themeController = new ThemeController(this);
+    m_themeController = new ThemeController(this, m_appSettingsRepository);
+#ifdef Q_OS_WINDOWS
+    auto *styleHints = QGuiApplication::styleHints();
+    connect(m_themeController, &ThemeController::effectiveColorSchemeChanged, styleHints, &QStyleHints::setColorScheme);
+    styleHints->setColorScheme(m_themeController->effectiveColorScheme());
+#endif
+    setQmlContextProperty("ThemeController", m_themeController);
 
     m_connectionUiController = new ConnectionUiController(m_connectionController, m_serversController, this);
     setQmlContextProperty("ConnectionController", m_connectionUiController);

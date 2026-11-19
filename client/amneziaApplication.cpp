@@ -35,15 +35,17 @@
 #ifdef Q_OS_ANDROID
 #include "platforms/android/android_controller.h"
 #endif
-         
 
 bool AmneziaApplication::m_forceQuit = false;
 
-AmneziaApplication::AmneziaApplication(int &argc, char *argv[]) : AMNEZIA_BASE_CLASS(argc, argv),
-      m_optAutostart({QStringLiteral("a"), QStringLiteral("autostart")}, QStringLiteral("System autostart")),
-      m_optCleanup  ({QStringLiteral("c"), QStringLiteral("cleanup")}, QStringLiteral("Cleanup logs")),
-      m_optConnect  ({QStringLiteral("connect")}, QStringLiteral("Connect to server by index on startup"), QStringLiteral("index")),
-      m_optImport   ({QStringLiteral("import")}, QStringLiteral("Import configuration from data string"), QStringLiteral("data"))
+AmneziaApplication::AmneziaApplication(int &argc, char *argv[], SecureQSettings *settings)
+    : AMNEZIA_BASE_CLASS(argc, argv),
+      m_optAutostart({ QStringLiteral("a"), QStringLiteral("autostart") }, QStringLiteral("System autostart")),
+      m_optCleanup({ QStringLiteral("c"), QStringLiteral("cleanup") }, QStringLiteral("Cleanup logs")),
+      m_optConnect({ QStringLiteral("connect") }, QStringLiteral("Connect to server by index on startup"),
+                   QStringLiteral("index")),
+      m_optImport({ QStringLiteral("import") }, QStringLiteral("Import configuration from data string"),
+                  QStringLiteral("data"))
 {
     setDesktopFileName(QStringLiteral(APPLICATION_NAME));
     setQuitOnLastWindowClosed(false);
@@ -64,7 +66,7 @@ AmneziaApplication::AmneziaApplication(int &argc, char *argv[]) : AMNEZIA_BASE_C
     QFile::setPermissions(configLoc2, QFileDevice::ReadOwner | QFileDevice::WriteOwner);
 #endif
 
-    m_settings = new SecureQSettings(ORGANIZATION_NAME, APPLICATION_NAME, this);
+    m_settings = settings ? settings : new SecureQSettings(ORGANIZATION_NAME, APPLICATION_NAME, this);
     m_nam = new QNetworkAccessManager(this);
 }
 
@@ -238,6 +240,7 @@ void AmneziaApplication::registerTypes()
     qRegisterMetaType<ServiceType>("ServiceType");
 
     qmlRegisterType<QRCodeReader>("QRCodeReader", 1, 0, "QRCodeReader");
+    qmlRegisterUncreatableType<ThemeController>("ThemeMode", 1, 0, "ThemeMode", "Use ThemeController");
 
     m_containerProps.reset(new ContainerProps());
     qmlRegisterSingletonInstance("ContainerProps", 1, 0, "ContainerProps", m_containerProps.get());

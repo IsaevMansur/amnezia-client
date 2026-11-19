@@ -27,6 +27,22 @@ SecureAppSettingsRepository::SecureAppSettingsRepository(SecureQSettings* settin
     m_gatewayEndpoint = storedEndpoint.isEmpty() ? gatewayEndpoint : storedEndpoint;
 }
 
+int SecureAppSettingsRepository::themeMode() const
+{
+    bool valid = false;
+    const int mode = value("Conf/themeMode", 0).toInt(&valid);
+    return valid ? mode : 0;
+}
+
+void SecureAppSettingsRepository::setThemeMode(int mode)
+{
+    if (themeMode() == mode) {
+        return;
+    }
+    setValue("Conf/themeMode", mode);
+    emit themeModeChanged();
+}
+
 QVariant SecureAppSettingsRepository::value(const QString &key, const QVariant &defaultValue) const
 {
     return m_settings->value(key, defaultValue);
@@ -522,7 +538,11 @@ QByteArray SecureAppSettingsRepository::backupAppConfig() const
 
 bool SecureAppSettingsRepository::restoreAppConfig(const QByteArray &cfg)
 {
-    return m_settings->restoreAppConfig(cfg);
+    if (!m_settings->restoreAppConfig(cfg)) {
+        return false;
+    }
+    emit themeModeChanged();
+    return true;
 }
 
 void SecureAppSettingsRepository::clearSettings()
